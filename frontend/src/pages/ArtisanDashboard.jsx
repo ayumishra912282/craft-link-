@@ -8,6 +8,7 @@ import {
   TrendingUp, Clock, Trash2
 } from 'lucide-react';
 import AnimatedCounter from '../components/AnimatedCounter';
+import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
 
 export default function ArtisanDashboard() {
@@ -61,146 +62,177 @@ export default function ArtisanDashboard() {
     }
   };
 
+
+  // Show skeleton while loading
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <div className="skeleton h-10 w-64 rounded-2xl" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[0,1,2,3].map(i => (
+            <div key={i} className="skeleton h-28 rounded-2xl" />
+          ))}
+        </div>
+        <div className="skeleton h-40 rounded-3xl" />
+        <div className="skeleton h-64 rounded-3xl" />
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      <ScrollReveal direction="down">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-stone-200">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                Master Karigar Studio
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-stone-900">
-              {user?.name || 'Ramesh Kumawat'}
-            </h1>
-            <p className="text-xs text-stone-500">
-              {user?.craft_type || 'Blue Pottery'} • {user?.region || 'Jaipur'}, {user?.state || 'Rajasthan'}
-            </p>
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-stone-200 dark:border-stone-800"
+      >
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+              Master Karigar Studio
+            </span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-stone-900 dark:text-stone-100">
+            {user?.name || 'Artisan'}
+          </h1>
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            {user?.craft_type || 'Handicraft'} • {user?.region || 'India'}, {user?.state || 'India'}
+          </p>
+        </div>
 
+        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
           <Link
             to="/artisan/products/new"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-600 via-terracotta to-amber-700 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-600 via-[#C85A27] to-amber-700 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-xl transition-shadow pulse-ring"
           >
             <Sparkles className="w-4 h-4 animate-pulse" />
             <span>{t('addNewProduct')}</span>
           </Link>
-        </div>
-      </ScrollReveal>
+        </motion.div>
+      </motion.div>
 
+      {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <ScrollReveal delay={0.05}>
-          <div className="bg-white p-5 rounded-2xl border border-stone-200/80 craft-card-shadow hover:-translate-y-1 transition-transform">
+        {[
+          { label: t('totalProducts'), value: stats?.total_products || products.length, icon: Package, color: 'text-amber-600', sub: 'Catalogued with AI' },
+          { label: t('publishedListings'), value: stats?.published_products || products.filter(p => p.status === 'published').length, icon: CheckCircle2, color: 'text-emerald-600', sub: 'Discoverable by buyers', valueColor: 'text-emerald-700 dark:text-emerald-400' },
+          { label: t('draftListings'), value: stats?.draft_products || products.filter(p => p.status === 'draft').length, icon: FileText, color: 'text-amber-600', sub: 'Ready to publish', valueColor: 'text-amber-800 dark:text-amber-400' },
+          { label: t('totalViews'), value: stats?.total_views || 0, icon: Eye, color: 'text-indigo-600', sub: 'Buyer engagement', suffix: '' },
+        ].map(({ label, value, icon: Icon, color, sub, valueColor, suffix }, i) => (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.08, duration: 0.5 }}
+            whileHover={{ y: -4, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+            className="bg-white dark:bg-[#131B2A] p-5 rounded-2xl border border-stone-200/80 dark:border-stone-800 shadow-sm transition-all"
+          >
             <div className="flex items-center justify-between mb-3 text-stone-400">
-              <span className="text-xs font-bold uppercase tracking-wider">{t('totalProducts')}</span>
-              <Package className="w-5 h-5 text-amber-600" />
+              <span className="text-xs font-bold uppercase tracking-wider dark:text-stone-500">{label}</span>
+              <Icon className={`w-5 h-5 ${color}`} />
             </div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-serif text-stone-900">
-              <AnimatedCounter to={stats?.total_products || products.length} />
+            <div className={`text-2xl sm:text-3xl font-extrabold font-serif ${valueColor || 'text-stone-900 dark:text-stone-100'}`}>
+              <AnimatedCounter to={value} suffix={suffix} />
             </div>
-            <div className="text-[11px] text-stone-500 mt-1">Catalogued with AI</div>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.1}>
-          <div className="bg-white p-5 rounded-2xl border border-stone-200/80 craft-card-shadow hover:-translate-y-1 transition-transform">
-            <div className="flex items-center justify-between mb-3 text-stone-400">
-              <span className="text-xs font-bold uppercase tracking-wider">{t('publishedListings')}</span>
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-serif text-emerald-700">
-              <AnimatedCounter to={stats?.published_products || products.filter(p => p.status === 'published').length} />
-            </div>
-            <div className="text-[11px] text-emerald-600 mt-1">Discoverable by buyers</div>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.15}>
-          <div className="bg-white p-5 rounded-2xl border border-stone-200/80 craft-card-shadow hover:-translate-y-1 transition-transform">
-            <div className="flex items-center justify-between mb-3 text-stone-400">
-              <span className="text-xs font-bold uppercase tracking-wider">{t('draftListings')}</span>
-              <FileText className="w-5 h-5 text-amber-600" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-serif text-amber-800">
-              <AnimatedCounter to={stats?.draft_products || products.filter(p => p.status === 'draft').length} />
-            </div>
-            <div className="text-[11px] text-stone-500 mt-1">Ready to be published</div>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.2}>
-          <div className="bg-white p-5 rounded-2xl border border-stone-200/80 craft-card-shadow hover:-translate-y-1 transition-transform">
-            <div className="flex items-center justify-between mb-3 text-stone-400">
-              <span className="text-xs font-bold uppercase tracking-wider">{t('totalViews')}</span>
-              <Eye className="w-5 h-5 text-indigo-600" />
-            </div>
-            <div className="text-2xl sm:text-3xl font-extrabold font-serif text-stone-900">
-              <AnimatedCounter to={stats?.total_views || 382} suffix=" views" />
-            </div>
-            <div className="text-[11px] text-stone-500 mt-1">Buyer engagement</div>
-          </div>
-        </ScrollReveal>
+            <div className="text-[11px] text-stone-500 dark:text-stone-400 mt-1">{sub}</div>
+          </motion.div>
+        ))}
       </div>
 
-      <div className="bg-gradient-to-br from-amber-50/80 via-white to-orange-50/50 rounded-3xl p-6 sm:p-8 border border-amber-200/70 shadow-sm space-y-4">
+      {/* Buyer Segments */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-gradient-to-br from-amber-50/80 via-white to-orange-50/50 dark:from-amber-950/20 dark:via-stone-900 dark:to-stone-900 rounded-3xl p-6 sm:p-8 border border-amber-200/70 dark:border-amber-800/30 shadow-sm space-y-4"
+      >
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
             <TrendingUp className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-base font-bold font-serif text-stone-900">
-              Smart Market Matching ? Identified Buyer Segments
+            <h2 className="text-base font-bold font-serif text-stone-900 dark:text-stone-100">
+              Smart Market Matching — Identified Buyer Segments
             </h2>
-            <p className="text-xs text-stone-500">
-              AI recommendations based on your craft attributes, materials & styling
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              AI recommendations based on your craft attributes, materials &amp; styling
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
           {stats?.top_buyer_segments?.map((seg, idx) => (
-            <div key={idx} className="p-3.5 bg-white rounded-xl border border-stone-200 shadow-xs flex flex-col justify-between">
-              <div className="text-xs font-bold text-stone-900">{seg.segment}</div>
-              <div className="text-[10px] text-terracotta font-semibold mt-2">
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 + idx * 0.05 }}
+              whileHover={{ scale: 1.03 }}
+              className="p-3.5 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 shadow-xs flex flex-col justify-between"
+            >
+              <div className="text-xs font-bold text-stone-900 dark:text-stone-100">{seg.segment}</div>
+              <div className="text-[10px] text-[#C85A27] font-semibold mt-2">
                 High Buyer Affinity
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-md space-y-6">
+      {/* Product Inventory */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-white dark:bg-[#131B2A] rounded-3xl p-6 sm:p-8 border border-stone-200/80 dark:border-stone-800 shadow-md space-y-6"
+      >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold font-serif text-stone-900">
+          <h2 className="text-lg font-bold font-serif text-stone-900 dark:text-stone-100">
             Your Craft Inventory
           </h2>
-          <span className="text-xs text-stone-500">
+          <span className="text-xs text-stone-500 dark:text-stone-400">
             {products.length} registered items
           </span>
         </div>
 
         {products.length === 0 ? (
           <div className="text-center py-12 space-y-3">
-            <Package className="w-10 h-10 text-stone-300 mx-auto" />
-            <p className="text-xs text-stone-500">You have no products listed yet.</p>
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <Package className="w-10 h-10 text-stone-300 dark:text-stone-600 mx-auto" />
+            </motion.div>
+            <p className="text-xs text-stone-500 dark:text-stone-400">You have no products listed yet.</p>
             <Link
               to="/artisan/products/new"
-              className="inline-block px-4 py-2 rounded-xl bg-terracotta text-white text-xs font-bold"
+              className="inline-block px-4 py-2 rounded-xl bg-[#C85A27] text-white text-xs font-bold hover:bg-amber-700 transition-colors"
             >
               Add your first craft with AI
             </Link>
           </div>
         ) : (
-          <div className="divide-y divide-stone-100">
-            {products.map((p) => (
-              <div key={p.id} className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="divide-y divide-stone-100 dark:divide-stone-800">
+            {products.map((p, i) => (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + i * 0.04 }}
+                className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+              >
                 <div className="flex items-center space-x-4">
-                  <img
-                    src={p.image_url}
-                    alt={p.title}
-                    className="w-16 h-16 rounded-xl object-cover bg-stone-100 border border-stone-200"
-                  />
+                  <div className="relative">
+                    <img
+                      src={p.image_url}
+                      alt={p.title}
+                      className="w-16 h-16 rounded-xl object-cover bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700"
+                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=200&q=60'; }}
+                    />
+                    <span className={`absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full border-2 border-white dark:border-stone-900 ${p.status === 'published' ? 'bg-emerald-500' : 'bg-amber-400'}`} />
+                  </div>
                   <div>
                     <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 hover:text-[#C85A27] dark:hover:text-amber-400 transition-colors">
                       <Link to={'/product/' + p.id}>{p.title}</Link>
@@ -217,31 +249,37 @@ export default function ArtisanDashboard() {
 
                 <div className="flex items-center space-x-2 self-end sm:self-center">
                   <span className={'px-2.5 py-1 rounded-full text-xs font-bold ' + (
-                    p.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-100 text-stone-600'
+                    p.status === 'published'
+                      ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                   )}>
                     {p.status === 'published' ? t('statusPublished') : t('statusDraft')}
                   </span>
 
-                  <button
-                    onClick={() => handleToggleStatus(p)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors"
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleTogglePublish(p)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors"
                   >
                     {p.status === 'published' ? t('unpublish') : t('publish')}
-                  </button>
+                  </motion.button>
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => handleDelete(p.id)}
-                    className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                     title="Delete product"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

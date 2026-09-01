@@ -11,22 +11,14 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       console.warn('Storage read restricted:', e);
     }
-    return {
-      id: 'artisan-ramesh-01',
-      name: 'Ramesh Kumawat',
-      email: 'artisan@craftlink.in',
-      role: 'artisan',
-      craft_type: 'Blue Pottery',
-      state: 'Rajasthan',
-      region: 'Jaipur'
-    };
+    return null; // ✅ FIX: No hardcoded default user — user must login
   });
 
   const [token, setToken] = useState(() => {
     try {
-      return localStorage.getItem('craftlink_token') || 'demo-token';
+      return localStorage.getItem('craftlink_token') || null;
     } catch (e) {
-      return 'demo-token';
+      return null;
     }
   });
   const [loading, setLoading] = useState(false);
@@ -50,6 +42,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       setToken(res.data.token);
       localStorage.setItem('craftlink_token', res.data.token);
+      localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
       return res.data;
     } finally {
       setLoading(false);
@@ -63,6 +56,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       setToken(res.data.token);
       localStorage.setItem('craftlink_token', res.data.token);
+      localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
       return res.data;
     } finally {
       setLoading(false);
@@ -76,6 +70,22 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       setToken(res.data.token);
       localStorage.setItem('craftlink_token', res.data.token);
+      localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
+      return res.data;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ FIX: loginWithOtp — used by OTPAuthPage instead of setUser/setToken directly
+  const loginWithOtp = async (identifier, otp, role, name) => {
+    setLoading(true);
+    try {
+      const res = await authApi.verifyOtp({ identifier, otp, role, name });
+      setUser(res.data.user);
+      setToken(res.data.token);
+      localStorage.setItem('craftlink_token', res.data.token);
+      localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
       return res.data;
     } finally {
       setLoading(false);
@@ -90,7 +100,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, demoLogin, logout, isArtisan: user?.role === 'artisan', isBuyer: user?.role === 'buyer' }}>
+    <AuthContext.Provider value={{
+      user,
+      token,
+      loading,
+      login,
+      register,
+      demoLogin,
+      loginWithOtp,
+      logout,
+      // ✅ FIX: expose setUser and setToken for any direct usage
+      setUser,
+      setToken,
+      isArtisan: user?.role === 'artisan',
+      isBuyer: user?.role === 'buyer'
+    }}>
       {children}
     </AuthContext.Provider>
   );
