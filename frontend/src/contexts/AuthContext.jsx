@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authApi } from '../services/api';
+import { speakHindi } from '../services/voice';
 
 const AuthContext = createContext();
 
@@ -43,6 +44,10 @@ export const AuthProvider = ({ children }) => {
       setToken(res.data.token);
       localStorage.setItem('craftlink_token', res.data.token);
       localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
+      
+      if (res.data.user && res.data.user.name) {
+        speakHindi(`Namaste ${res.data.user.name} jee, waapas aane ke liye dhanyawad`);
+      }
       return res.data;
     } finally {
       setLoading(false);
@@ -71,6 +76,10 @@ export const AuthProvider = ({ children }) => {
       setToken(res.data.token);
       localStorage.setItem('craftlink_token', res.data.token);
       localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
+      
+      if (res.data.user && res.data.user.name) {
+        speakHindi(`Namaste ${res.data.user.name} jee, demo mode mein aapka swagat hai`);
+      }
       return res.data;
     } finally {
       setLoading(false);
@@ -86,6 +95,12 @@ export const AuthProvider = ({ children }) => {
       setToken(res.data.token);
       localStorage.setItem('craftlink_token', res.data.token);
       localStorage.setItem('craftlink_user', JSON.stringify(res.data.user));
+      
+      // Personal Hindi Greeting
+      if (res.data.user && res.data.user.name) {
+        speakHindi(`Namaste ${res.data.user.name} jee, Craft Link mein aapka swagat hai`);
+      }
+      
       return res.data;
     } finally {
       setLoading(false);

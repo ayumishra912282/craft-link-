@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-
+import { speakHindi } from '../services/voice';
 export default function SiteOpeningReveal() {
   const [visible, setVisible] = useState(() => {
     try {
@@ -17,6 +17,10 @@ export default function SiteOpeningReveal() {
 
   useEffect(() => {
     if (!visible) return;
+    
+    // Play personal voice welcome!
+    speakHindi("Namaste! Craft Link mein aapka swagat hai.");
+    
     const t1 = setTimeout(() => setPhase(1), 200);
     const t2 = setTimeout(() => setPhase(2), 1000);
     const t3 = setTimeout(() => setVisible(false), 1600);
