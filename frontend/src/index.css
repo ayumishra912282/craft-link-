@@ -1,0 +1,381 @@
+/* ============================================
+   CraftLink — Global CSS (Enhanced with 3D + Animations)
+   ============================================ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-terracotta: #C85A27;
+    --color-forest: #1E4D2B;
+    --color-sand: #FAF7F5;
+    --glow-amber: rgba(200, 90, 39, 0.3);
+  }
+
+  * {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #FAF7F5;
+    color: #1C1917;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  body.dark {
+    background-color: #0B0F17;
+    color: #F5F5F4;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.015em;
+  }
+
+  .font-display {
+    font-family: 'Cinzel', 'Bodoni Moda', serif;
+    letter-spacing: 0.04em;
+  }
+}
+
+/* ==========================================
+   GLASSMORPHISM
+   ========================================== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(229, 231, 235, 0.7);
+}
+
+.dark .glass-card {
+  background: rgba(19, 27, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ==========================================
+   3D CARD HOVER EFFECTS
+   ========================================== */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateX(-3deg) rotateY(3deg) translateY(-6px) translateZ(10px);
+  box-shadow: 20px 30px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(200, 90, 39, 0.2);
+}
+
+.card-3d-subtle {
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.card-3d-subtle:hover {
+  transform: perspective(800px) translateY(-5px) rotateX(-2deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   CRAFT CARD EFFECTS
+   ========================================== */
+.craft-card-shadow {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.craft-card-shadow:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 50px -8px rgba(200, 90, 39, 0.18), 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ==========================================
+   MARQUEE ANIMATION
+   ========================================== */
+@keyframes marqueeRightToLeft {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeRightToLeft 32s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused !important;
+}
+
+/* ==========================================
+   SHIMMER SKELETON LOADER
+   ========================================== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(0,0,0,0.04) 25%,
+    rgba(0,0,0,0.08) 37%,
+    rgba(0,0,0,0.04) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 37%,
+    rgba(255,255,255,0.04) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+/* ==========================================
+   FLOATING ANIMATION
+   ========================================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(1deg); }
+  66% { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-18px) scale(1.02); }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: floatSlow 8s ease-in-out infinite;
+}
+
+/* ==========================================
+   GLOW EFFECTS
+   ========================================== */
+.glow-amber {
+  box-shadow: 0 0 30px rgba(200, 90, 39, 0.35);
+}
+
+.glow-green {
+  box-shadow: 0 0 30px rgba(30, 77, 43, 0.3);
+}
+
+.text-glow {
+  text-shadow: 0 0 40px rgba(200, 90, 39, 0.5);
+}
+
+/* ==========================================
+   GRADIENT TEXT
+   ========================================== */
+.gradient-text {
+  background: linear-gradient(135deg, #C85A27 0%, #F59E0B 50%, #C85A27 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* ==========================================
+   PAGE TRANSITION
+   ========================================== */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================
+   PARTICLE DOTS BACKGROUND
+   ========================================== */
+.dots-bg {
+  background-image: radial-gradient(rgba(200, 90, 39, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.dark .dots-bg {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
+/* ==========================================
+   BUTTON PULSE RING
+   ========================================== */
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(200, 90, 39, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(200, 90, 39, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 90, 39, 0); }
+}
+
+.pulse-ring {
+  animation: pulseRing 2s infinite;
+}
+
+/* ==========================================
+   SCROLL REVEAL (used by ScrollReveal component)
+   ========================================== */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================
+   CRAFT IMAGE ZOOM ON HOVER
+   ========================================== */
+.craft-img-container {
+  overflow: hidden;
+}
+
+.craft-img-container img {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.craft-img-container:hover img {
+  transform: scale(1.08);
+}
+
+/* ==========================================
+   LOADING SPINNER
+   ========================================== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(200, 90, 39, 0.2);
+  border-top-color: #C85A27;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+/* ==========================================
+   MORPHING BLOB
+   ========================================== */
+@keyframes morphBlob {
+  0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+  34% { border-radius: 70% 30% 40% 60% / 30% 60% 50% 60%; }
+  67% { border-radius: 50% 50% 30% 70% / 60% 30% 70% 40%; }
+}
+
+.blob {
+  animation: morphBlob 8s ease-in-out infinite;
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR
+   ========================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 90, 39, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 90, 39, 0.6);
+}
+
+/* ==========================================
+   RIPPLE EFFECT (for buttons)
+   ========================================== */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.25) 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform .4s, opacity .8s;
+}
+
+.ripple:active::after {
+  transform: scale(0, 0);
+  opacity: .3;
+  transition: 0s;
+}
+
+/* ==========================================
+   HERO 3D FLOATING CARD
+   ========================================== */
+@keyframes heroFloat {
+  0%, 100% { transform: perspective(1000px) rotateY(-5deg) rotateX(3deg) translateY(0); }
+  50% { transform: perspective(1000px) rotateY(-3deg) rotateX(1deg) translateY(-15px); }
+}
+
+.hero-card-float {
+  animation: heroFloat 6s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+/* ==========================================
+   FADE IN UP (utility class)
+   ========================================== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Staggered children */
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 320ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 400ms; }
